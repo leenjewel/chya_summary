@@ -1,0 +1,28 @@
+{% extends 'common/base.html' %}
+{% load staticfiles %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'summary/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if login_error %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>登录失败, 用户名或密码错误!</strong>
+    </div>
+    {% endif %}
+    <form class="form-signin" action="" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">登录</h2>
+        <label for="input-user-name" class="sr-only">用户名</label>
+        <input type="text" name="user_name" id="input-user-name" class="form-control" placeholder="用户名" required autofocus>
+        <label for="input-password" class="sr-only">密码</label>
+        <input type="password" name="password" id="input-password" class="form-control" placeholder="密码" required>
+        <button type="submit" class="btn btn-lg btn-primary btn-block">登录</button>
+    </form>
+</div>
+{% endblock %}
+
