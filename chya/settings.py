@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'summary',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -85,7 +86,10 @@ DATABASES = {
         'HOST' : '127.0.0.1',
         'USER' : 'root',
         'PASSWORD' : 'root',
-    }
+        'OPTIONS': {
+            "init_command": "SET storage_engine=INNODB",
+        },
+    },
 }
 
 
@@ -132,4 +136,6 @@ STATICFILES_DIRS = [
 ]
 
 SITE_TITLE = u"财务汇总"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 

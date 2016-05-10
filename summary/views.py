@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -7,6 +9,10 @@ from django.contrib.auth import logout as _logout
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from summary import models
+from summary.sheets.profitsheet import ProfitSheet
+from summary.sheets.costsheet import CostSheet
+from summary.sheets.salessheet import SalesSheet
 
 def login(request) :
     context = RequestContext(request)
@@ -74,4 +80,45 @@ def logout(request) :
 def index(request) :
     context = RequestContext(request)
     return render(request, 'summary/index.html', context)
+
+
+@login_required(login_url = '/summary/login/')
+def workbook(request) :
+    context = RequestContext(request)
+    context['parsetasks'] = models.ParseTask.objects.all()
+    return render(request, 'summary/workbook.html', context)
+
+
+@login_required(login_url = '/summary/login/')
+def sheet(request, hashid) :
+    context = RequestContext(request)
+    context['hashid'] = hashid
+    context['sheets'] = [
+        {
+            'id' : 'profit',
+            'tabs' : ProfitSheet.name,
+            'selected' : True,
+        },
+        {
+            'id' : 'cost',
+            'tabs' : CostSheet.name,
+            'selected' : False,
+        },
+        {
+            'id' : 'sales',
+            'tabs' : SalesSheet.name,
+            'selected' : False,
+        },
+    ]
+    return render(request, 'summary/sheet.html', context)
+
+
+@login_required(login_url = '/summary/login/')
+def table(request, hashid, table) :
+    context = RequestContext(request)
+    context['hashid'] = hashid
+    context['tableid'] = table
+    if "profit" == table :
+        context['data'] = ProfitSheet.format(hashid)
+    return render(request, 'summary/'+table+'.html/', context)
 

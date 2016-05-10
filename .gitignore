@@ -115,3 +115,5 @@ Session.vim
 # auto-generated tag files
 tags
 
+*.xls*
+

@@ -1,0 +1,60 @@
+{% extends 'summary/logined.html' %}
+
+{% block content %}
+<ul id="sheet-tabs" class="nav nav-tabs">
+    {% for sheet in sheets %}
+    {% if sheet.selected %}
+    <li role="presentation" class="active"><a id="sheet-a-{{ sheet.id }}" sheetid="{{ sheet.id }}" sheeturl="{% url 'summary:table' hashid sheet.id %}" href="#sheet-content-{{ sheet.id }}" role="tab" data-toggle="tab">{{ sheet.tabs }}</a></li>
+    {% else %}
+    <li role="presentation"><a id="sheet-a-{{ sheet.id }}" sheetid="{{ sheet.id }}" sheeturl="{% url 'summary:table' hashid sheet.id %}" href="#sheet-content-{{ sheet.id }}" role="tab" data-toggle="tab">{{ sheet.tabs }}</a></li>
+    {% endif %}
+    {% endfor %}
+</ul>
+<div id="sheet-content" class="tab-content">
+    {% for sheet in sheets %}
+    {% if sheet.selected %}
+    <div role="tabpanel" class="tab-pane fade in active" id="sheet-content-{{ sheet.id }}" aria-labelledby="{{ sheet.id }}-tab">
+    {% else %}
+    <div role="tabpanel" class="tab-pane fade" id="sheet-content-{{ sheet.id }}" aria-labelledby="{{ sheet.id }}-tab">
+    {% endif %}
+        <h3>正在载入表格，请耐心等待......<h3>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(function(){
+    $('#sheet-tabs a').click(function (e) {
+        e.preventDefault();
+        var a = $(this);
+        a.tab('show');
+        if (undefined === a.attr("hasloaded")) {
+            $.get(
+                a.attr("sheeturl"),
+                {},
+                function(html){
+                    $("#sheet-content-"+a.attr("sheetid")).html(html);
+                    a.attr("hasloaded", "yes");
+                },
+                'html'
+            );
+        }
+    });
+    {% for sheet in sheets %}
+    {% if sheet.selected %}
+    $.get(
+        "{% url 'summary:table' hashid sheet.id %}",
+        {},
+        function(html) {
+            $("#sheet-content-{{ sheet.id }}").html(html);
+            $("#sheet-a-{{ sheet.id }}").attr("hasloaded", "yes");
+        },
+        "html"
+    );
+    {% endif %}
+    {% endfor %}
+});
+</script>
+{% endblock %}

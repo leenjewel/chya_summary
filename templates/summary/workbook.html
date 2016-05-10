@@ -1,0 +1,29 @@
+{% extends 'summary/logined.html' %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr><td>报表名称</td><td>状态</td><td></td></tr>
+    </thead>
+{% for parsetask in parsetasks %}
+    <tr>
+        <td>{{ parsetask.filename }}</td>
+        <td>
+            {% if parsetask.hasparsed %}
+            <span class="label label-success">已导入</span>
+            {% elif parsetask.isparseing %}
+            <span class="label label-danger">正在导入中...</span>
+            {% else %}
+            <span class="label label-danger">未导入</span>
+            {% endif %}
+        </td>
+        <td>
+            {% if parsetask.hasparsed %}
+            <a class="glyphicon glyphicon-play-circle" href="{% url 'summary:sheet' parsetask.hashid %}"></a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
+
