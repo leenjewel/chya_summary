@@ -15,16 +15,14 @@ class ProfitSheet(BaseSheet) :
             row_values = self.sheet.row_values(row_num)
             if self.head_row_num is None :
                 head_col_num = 0
-                head_col_num = 0
                 self.head_col_from = None
                 for col_value in row_values :
-                    if col_value in self.head :
+                    if col_value == self.head[0] :
                         if self.head_col_from is None :
                             self.head_col_from = head_col_num
-                        head_col_num += 1
-                        if head_col_num >= len(self.head) :
+                        if self.head_row_num is None :
                             self.head_row_num = row_num
-                            break;
+                            return;
                     head_col_num += 1
 
 
@@ -56,7 +54,7 @@ class ProfitSheet(BaseSheet) :
         compnay_id = self.pinyin(compnay_name)
         year = task.year
         for val in values :
-            if 0 == val_num or 0 == head_num % val_num :
+            if 0 == val_num or 0 == val_num % head_num :
                 if profit and profit.isQualified() :
                     profits.append(profit)
                 try :
@@ -79,7 +77,7 @@ class ProfitSheet(BaseSheet) :
                     setattr(profit, self.attr[val_num % head_num], val)
             except ValueError, e:
                 pass
-            else :
+            finally :
                 val_num += 1
         return profits
 

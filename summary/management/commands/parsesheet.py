@@ -22,6 +22,8 @@ class Command(BaseCommand) :
         if os.path.exists(workbook_path) :
             for root, dirs, files in os.walk(workbook_path) :
                 for workbook_file in files :
+                    if not workbook_file[workbook_file.rindex('.')+1:].startswith('xls') :
+                        continue
                     workbook_path = os.path.join(root, workbook_file)
                     with open(workbook_path) as workbook_fp :
                         hashobj = md5.new()
@@ -46,12 +48,10 @@ class Command(BaseCommand) :
         try :
             ParseTask.objects.get(hashid = task.hashid, isparseing = True)
         except ParseTask.DoesNotExist, e :
-            sid = transaction.savepoint()
             try :
                 task.isparseing = True
                 task.hasparsed = False
                 task.save()
-                transaction.savepoint_commit(sid)
                 workbook = xlrd.open_workbook(workbook_path)
                 profit_sheet = ProfitSheet(workbook)
                 profits = profit_sheet.parse(task)
@@ -62,5 +62,5 @@ class Command(BaseCommand) :
                 task.hasparsed = True
                 task.save()
             except IntegrityError :
-                transaction.savepoint_rollback(sid)
+                pass
 
