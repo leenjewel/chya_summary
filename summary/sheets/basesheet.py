@@ -37,7 +37,7 @@ class BaseSheet(object) :
 
     def attr_key_by_col(self, col_num) :
         try :
-            col_head_val = self.head_row_values[col_num]
+            col_head_val = self.allstrip(self.head_row_values[col_num])
             head_index = self.head.index(col_head_val)
             return self.attr[head_index]
         except ValueError :

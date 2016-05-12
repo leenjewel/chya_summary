@@ -9,7 +9,9 @@ from django.db import IntegrityError
 from django.db import DatabaseError
 from summary.models import ParseTask
 import xlrd
+
 from summary.sheets.profitsheet import ProfitSheet
+from summary.sheets.costsheet import CostSheet
 
 class Command(BaseCommand) :
 
@@ -54,8 +56,13 @@ class Command(BaseCommand) :
                 task.hasparsed = False
                 task.save()
                 workbook = xlrd.open_workbook(workbook_path)
+
                 profit_sheet = ProfitSheet(workbook)
-                profits = profit_sheet.parse(task)
+                profit_sheet.parse(task)
+
+                cost_sheet = CostSheet(workbook)
+                cost_sheet.parse(task)
+
                 task.isparseing = False
                 task.hasparsed = True
                 task.save()

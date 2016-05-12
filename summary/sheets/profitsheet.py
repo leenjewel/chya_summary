@@ -20,10 +20,14 @@ class ProfitSheet(BaseSheet) :
             if len(row_values) < self.head_col_from :
                 continue
             group_name = self.allstrip(row_values[self.head_col_from - 2])
+            if u'合计' == group_name :
+                continue
             if len(group_name) > 0 :
                 last_group_name = group_name
             compnay_name = self.allstrip(row_values[self.head_col_from - 1])
             if len(compnay_name) == 0 :
+                continue
+            if u'合计' == compnay_name :
                 continue
             profits += self.parse_profit(task, compnay_name, last_group_name, row_num, row_values[self.head_col_from:])
         return profits
@@ -87,7 +91,7 @@ class ProfitSheet(BaseSheet) :
 
 
     @classmethod
-    def format(self, hashid) :
+    def format(cls, hashid) :
         ret = []
         try :
             profits = Profit.objects.filter(hashid = hashid).order_by('line')
@@ -108,12 +112,12 @@ class ProfitSheet(BaseSheet) :
                     group_dct['__compnays__'].append(compnay_id)
                 group_dct[compnay_id]['__name__'] = profit.compnay_name
                 group_dct[compnay_id][profit.month] = (
-                        {'val' : profit.traffic, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', self.head[0]])},
-                        {'val' : profit.income, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', self.head[1]])  },
-                        {'val' : profit.cost, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', self.head[2]])  },
-                        {'val' : profit.gross_profit, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', self.head[3]])  },
-                        {'val' : profit.gross_margin, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', self.head[4]])  },
-                        {'val' : profit.profit_total, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', self.head[5]])  },
+                        {'val' : profit.traffic, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', cls.head[0]])},
+                        {'val' : profit.income, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', cls.head[1]])  },
+                        {'val' : profit.cost, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', cls.head[2]])  },
+                        {'val' : profit.gross_profit, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', cls.head[3]])  },
+                        {'val' : profit.gross_margin, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', cls.head[4]])  },
+                        {'val' : profit.profit_total, 'tip' : u'_'.join([profit.compnay_name, unicode(profit.month)+u'月', cls.head[5]])  },
                 )
             for group_id in groups :
                 group_dct = dct[group_id]
@@ -127,11 +131,11 @@ class ProfitSheet(BaseSheet) :
                         if dct[group_id][compnay_id].has_key(month) :
                             row += dct[group_id][compnay_id][month]
                         else:
-                            row += [{'val' : 0.0, 'tip' : u'_'.join([compnay_name, unicode(month)+u'月', self.head[x]])} for x in range(0, 6)]
+                            row += [{'val' : 0.0, 'tip' : u'_'.join([compnay_name, unicode(month)+u'月', cls.head[x]])} for x in range(0, 6)]
                     ret.append(row)
         except Profit.DoesNotExist, e:
             pass
-        else :
+        finally :
             if len(ret) == 0 :
                 return u''
             else:
@@ -139,7 +143,7 @@ class ProfitSheet(BaseSheet) :
                 for l in ret :
                     line = u'<tr><td>' + l[1] + u'</td><td>' + l[2] + u'</td>'
                     line += u''.join([u'<td data-toggle="tooltip" data-placement="top" title="'+x['tip']+u'">'+unicode(x['val'])+u'</td>' for x in l[3:]])
-                    out += line + '<tr>'
+                    out += line + '</tr>'
                 return out
 
 

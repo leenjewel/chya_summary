@@ -118,7 +118,9 @@ def table(request, hashid, table) :
     context = RequestContext(request)
     context['hashid'] = hashid
     context['tableid'] = table
-    if "profit" == table :
+    if 'profit' == table :
         context['data'] = ProfitSheet.format(hashid)
+    elif 'cost' == table :
+        context['data'] = CostSheet.format(hashid)
     return render(request, 'summary/'+table+'.html/', context)
 
