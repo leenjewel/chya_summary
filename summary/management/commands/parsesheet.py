@@ -4,8 +4,9 @@ from django.conf import settings
 import md5
 import os
 import datetime
-from django.db import IntegrityError
 from django.db import transaction
+from django.db import IntegrityError
+from django.db import DatabaseError
 from summary.models import ParseTask
 import xlrd
 from summary.sheets.profitsheet import ProfitSheet
@@ -45,22 +46,19 @@ class Command(BaseCommand) :
 
 
     def doTask(self, task, workbook_path) :
-        try :
-            ParseTask.objects.get(hashid = task.hashid, isparseing = True)
-        except ParseTask.DoesNotExist, e :
+        with transaction.atomic() :
             try :
+                ParseTask.objects.select_for_update().get(hashid = task.hashid, isparseing = True)
+            except ParseTask.DoesNotExist, e :
                 task.isparseing = True
                 task.hasparsed = False
                 task.save()
                 workbook = xlrd.open_workbook(workbook_path)
                 profit_sheet = ProfitSheet(workbook)
                 profits = profit_sheet.parse(task)
-                for profit in profits :
-                    profit.save()
-
                 task.isparseing = False
                 task.hasparsed = True
                 task.save()
-            except IntegrityError :
-                pass
+            except DatabaseError, e:
+                print "DatabaseError",e
 

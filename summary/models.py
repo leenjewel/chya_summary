@@ -6,12 +6,16 @@ from django.db import models
 
 class Profit(models.Model) :
 
+    line         = models.IntegerField()
     year         = models.IntegerField()  # 年份
     month        = models.IntegerField()  # 月份
     compnay_id   = models.CharField(max_length = 64)
     compnay_name = models.CharField(max_length = 64)
     group_id     = models.CharField(max_length = 64)
     group_name   = models.CharField(max_length = 64)
+    man_id       = models.CharField(max_length = 32)
+    sub_id       = models.CharField(max_length = 32)
+    trd_id       = models.CharField(max_length = 32)
     hashid       = models.CharField(max_length = 32)
     traffic      = models.FloatField(default = 0)  # 运量
     income       = models.FloatField(default = 0)  # 收入
@@ -24,7 +28,7 @@ class Profit(models.Model) :
         unique_together = (('year', 'month', 'compnay_id',),)
         index_together = (
             ('year', 'month', 'compnay_id',),
-            ('hashid', 'id',)
+            ('hashid', 'line', 'month',),
         )
 
     def isQualified(self) :
