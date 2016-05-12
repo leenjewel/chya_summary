@@ -12,6 +12,8 @@ import xlrd
 
 from summary.sheets.profitsheet import ProfitSheet
 from summary.sheets.costsheet import CostSheet
+from summary.sheets.salessheet import SalesSheet
+from summary.sheets.managementcostsheet import ManagementCostSheet
 
 class Command(BaseCommand) :
 
@@ -57,11 +59,10 @@ class Command(BaseCommand) :
                 task.save()
                 workbook = xlrd.open_workbook(workbook_path)
 
-                profit_sheet = ProfitSheet(workbook)
-                profit_sheet.parse(task)
-
-                cost_sheet = CostSheet(workbook)
-                cost_sheet.parse(task)
+                profit_sheet = ProfitSheet(workbook).parse(task)
+                cost_sheet = CostSheet(workbook).parse(task)
+                SalesSheet(workbook).parse(task)
+                ManagementCostSheet(workbook).parse(task)
 
                 task.isparseing = False
                 task.hasparsed = True

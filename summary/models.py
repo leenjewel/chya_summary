@@ -53,6 +53,42 @@ class Cost(models.Model) :
         )
 
 
+class Sales(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    item_control = models.BooleanField()
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
+class ManagementCost(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    item_control = models.BooleanField()
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
 class ParseTask(models.Model) :
 
     hashid = models.CharField(max_length = 32, primary_key = True)

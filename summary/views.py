@@ -13,6 +13,7 @@ from summary import models
 from summary.sheets.profitsheet import ProfitSheet
 from summary.sheets.costsheet import CostSheet
 from summary.sheets.salessheet import SalesSheet
+from summary.sheets.managementcostsheet import ManagementCostSheet
 
 def login(request) :
     context = RequestContext(request)
@@ -109,6 +110,11 @@ def sheet(request, hashid) :
             'tabs' : SalesSheet.name,
             'selected' : False,
         },
+        {
+            'id' : 'managementcost',
+            'tabs' : ManagementCostSheet.name,
+            'selected' : False,
+        },
     ]
     return render(request, 'summary/sheet.html', context)
 
@@ -122,5 +128,9 @@ def table(request, hashid, table) :
         context['data'] = ProfitSheet.format(hashid)
     elif 'cost' == table :
         context['data'] = CostSheet.format(hashid)
+    elif 'sales' == table :
+        context['data'] = SalesSheet.format(hashid)
+    elif 'managementcost' == table :
+        context['data'] = ManagementCostSheet.format(hashid)
     return render(request, 'summary/'+table+'.html/', context)
 

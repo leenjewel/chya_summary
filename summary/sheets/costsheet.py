@@ -7,6 +7,8 @@ class CostSheet(BaseSheet) :
 
     name = u'成本明细'
 
+    model = Cost
+
     head = (u'项目', u'1月', u'2月', u'3月', u'4月', u'5月', u'6月', u'7月', u'8月', u'9月', u'10月', u'11月', u'12月', u'累计',)
     attr = ('item_name', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,)
 
@@ -33,9 +35,9 @@ class CostSheet(BaseSheet) :
                         col_num += 1
                         continue
                     try :
-                        cost = Cost.objects.get(year = year, month = month, item_id = item_id)
-                    except Cost.DoesNotExist :
-                        cost = Cost()
+                        cost = self.model.objects.get(year = year, month = month, item_id = item_id)
+                    except self.model.DoesNotExist :
+                        cost = self.model()
                         cost.line = row_num
                         cost.year = year
                         cost.month = month
@@ -60,7 +62,7 @@ class CostSheet(BaseSheet) :
         ret = []
         try :
             cost_list = []
-            costs = Cost.objects.filter(hashid = hashid).order_by('line', 'month')
+            costs = cls.model.objects.filter(hashid = hashid).order_by('line', 'month')
             for cost in costs :
                 if len(cost_list) == 14 :
                     ret.append(cost_list)
