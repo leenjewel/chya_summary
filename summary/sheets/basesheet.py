@@ -20,9 +20,14 @@ class BaseSheet(object) :
         try :
             self.sheet = workbook.sheet_by_name(self.name)
         except xlrd.biffh.XLRDError:
-            self.sheet = workbook.sheet_by_name(self.allstrip(self.name))
+            try :
+                self.sheet = workbook.sheet_by_name(self.allstrip(self.name))
+            except xlrd.biffh.XLRDError:
+                pass
 
     def parse_head(self) :
+        if self.sheet is None :
+            return
         for row_num in range(0, self.sheet.nrows) :
             row_values = self.sheet.row_values(row_num)
             if self.head_row_num is None :
