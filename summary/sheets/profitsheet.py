@@ -47,7 +47,7 @@ class ProfitSheet(BaseSheet) :
                     profit.save()
                     profits.append(profit)
                 try :
-                    profit = Profit.objects.get(year = year, month = month, compnay_id = compnay_id)
+                    profit = Profit.objects.get(hashid = task.hashid, year = year, month = month, compnay_id = compnay_id)
                 except Profit.DoesNotExist, e :
                     profit = Profit()
                 profit.line = row_num

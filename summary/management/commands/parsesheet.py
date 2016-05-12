@@ -14,6 +14,11 @@ from summary.sheets.profitsheet import ProfitSheet
 from summary.sheets.costsheet import CostSheet
 from summary.sheets.salessheet import SalesSheet
 from summary.sheets.managementcostsheet import ManagementCostSheet
+from summary.sheets.financialexpensessheet import FinancialExpensesSheet
+from summary.sheets.taxespayablesheet import TaxesPayableSheet
+from summary.sheets.taxespaidsheet import TaxesPaidSheet
+from summary.sheets.laborcostsheet import LaborCostSheet
+from summary.sheets.depreciationsheet import DepreciationSheet
 
 class Command(BaseCommand) :
 
@@ -63,10 +68,16 @@ class Command(BaseCommand) :
                 cost_sheet = CostSheet(workbook).parse(task)
                 SalesSheet(workbook).parse(task)
                 ManagementCostSheet(workbook).parse(task)
+                FinancialExpensesSheet(workbook).parse(task)
+                TaxesPayableSheet(workbook).parse(task)
+                TaxesPaidSheet(workbook).parse(task)
+                LaborCostSheet(workbook).parse(task)
+                DepreciationSheet(workbook).parse(task)
 
+            except DatabaseError, e:
+                print "DatabaseError",e
+            finally :
                 task.isparseing = False
                 task.hasparsed = True
                 task.save()
-            except DatabaseError, e:
-                print "DatabaseError",e
 

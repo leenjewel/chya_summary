@@ -2,6 +2,7 @@
 
 from anjuke import pinyin
 import re
+import xlrd
 
 class BaseSheet(object) :
 
@@ -16,7 +17,10 @@ class BaseSheet(object) :
     head_row_values = None
 
     def __init__(self, workbook) :
-        self.sheet = workbook.sheet_by_name(self.name)
+        try :
+            self.sheet = workbook.sheet_by_name(self.name)
+        except xlrd.biffh.XLRDError:
+            self.sheet = workbook.sheet_by_name(self.allstrip(self.name))
 
     def parse_head(self) :
         for row_num in range(0, self.sheet.nrows) :
@@ -52,5 +56,7 @@ class BaseSheet(object) :
 
 
     def allstrip(self, txt) :
+        if not isinstance(txt, str) and not isinstance(txt, unicode) :
+            return u''
         return re.sub(r"\s+", "", txt.strip().replace(' ',''), flags=re.UNICODE)
 

@@ -14,6 +14,11 @@ from summary.sheets.profitsheet import ProfitSheet
 from summary.sheets.costsheet import CostSheet
 from summary.sheets.salessheet import SalesSheet
 from summary.sheets.managementcostsheet import ManagementCostSheet
+from summary.sheets.financialexpensessheet import FinancialExpensesSheet
+from summary.sheets.taxespayablesheet import TaxesPayableSheet
+from summary.sheets.taxespaidsheet import TaxesPaidSheet
+from summary.sheets.laborcostsheet import LaborCostSheet
+from summary.sheets.depreciationsheet import DepreciationSheet
 
 def login(request) :
     context = RequestContext(request)
@@ -115,6 +120,31 @@ def sheet(request, hashid) :
             'tabs' : ManagementCostSheet.name,
             'selected' : False,
         },
+        {
+            'id' : 'financialexpenses',
+            'tabs' : FinancialExpensesSheet.name,
+            'selected' : False,
+        },
+        {
+            'id' : 'taxespayable',
+            'tabs' : TaxesPayableSheet.name,
+            'selected' : False,
+        },
+        {
+            'id' : 'taxespaid',
+            'tabs' : TaxesPaidSheet.name,
+            'selected' : False,
+        },
+        {
+            'id' : 'laborcost',
+            'tabs' : LaborCostSheet.name,
+            'selected' : False,
+        },
+        {
+            'id' : 'depreciation',
+            'tabs' : DepreciationSheet.name,
+            'selected' : False,
+        },
     ]
     return render(request, 'summary/sheet.html', context)
 
@@ -132,5 +162,15 @@ def table(request, hashid, table) :
         context['data'] = SalesSheet.format(hashid)
     elif 'managementcost' == table :
         context['data'] = ManagementCostSheet.format(hashid)
+    elif 'financialexpenses' == table :
+        context['data'] = FinancialExpensesSheet.format(hashid)
+    elif 'taxespayable' == table :
+        context['data'] = TaxesPayableSheet.format(hashid)
+    elif 'taxespaid' == table :
+        context['data'] = TaxesPaidSheet.format(hashid)
+    elif 'laborcost' == table :
+        context['data'] = LaborCostSheet.format(hashid)
+    elif 'depreciation' == table :
+        context['data'] = DepreciationSheet.format(hashid)
     return render(request, 'summary/'+table+'.html/', context)
 

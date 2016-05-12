@@ -25,9 +25,8 @@ class Profit(models.Model) :
     profit_total = models.FloatField(default = 0)  # 利润总额
 
     class Meta :
-        unique_together = (('year', 'month', 'compnay_id',),)
+        unique_together = (('hashid', 'year', 'month', 'compnay_id',),)
         index_together = (
-            ('year', 'month', 'compnay_id',),
             ('hashid', 'line', 'month',),
         )
 
@@ -47,7 +46,7 @@ class Cost(models.Model) :
     value        = models.FloatField(default = 0.0)
 
     class Meta :
-        unique_together = (('year', 'month', 'item_id',),)
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
         index_together = (
             ('hashid', 'line', 'month',),
         )
@@ -65,7 +64,7 @@ class Sales(models.Model) :
     value        = models.FloatField(default = 0.0)
 
     class Meta :
-        unique_together = (('year', 'month', 'item_id',),)
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
         index_together = (
             ('hashid', 'line', 'month',),
         )
@@ -83,7 +82,102 @@ class ManagementCost(models.Model) :
     value        = models.FloatField(default = 0.0)
 
     class Meta :
-        unique_together = (('year', 'month', 'item_id',),)
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
+class FinancialExpenses(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    group_name   = models.CharField(max_length = 32)
+    group_id     = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
+class TaxesPayable(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    group_name   = models.CharField(max_length = 32)
+    group_id     = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
+class TaxesPaid(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    group_name   = models.CharField(max_length = 32)
+    group_id     = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
+class LaborCost(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    group_name   = models.CharField(max_length = 32)
+    group_id     = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
+        index_together = (
+            ('hashid', 'line', 'month',),
+        )
+
+
+class Depreciation(models.Model) :
+
+    line         = models.IntegerField()
+    year         = models.IntegerField()  # 年份
+    month        = models.IntegerField()  # 月份
+    hashid       = models.CharField(max_length = 32)
+    group_name   = models.CharField(max_length = 32)
+    group_id     = models.CharField(max_length = 32)
+    item_name    = models.CharField(max_length = 32)
+    item_id      = models.CharField(max_length = 32)
+    value        = models.FloatField(default = 0.0)
+
+    class Meta :
+        unique_together = (('hashid', 'year', 'month', 'item_id',),)
         index_together = (
             ('hashid', 'line', 'month',),
         )

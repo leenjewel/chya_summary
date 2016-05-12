@@ -25,17 +25,17 @@ class CostSheet(BaseSheet) :
                 if None is item_name or len(item_name) == 0 :
                     continue
                 item_name = self.allstrip(item_name)
-                if u'合计' == item_name :
-                    continue
+                # if u'合计' == item_name :
+                #     continue
                 item_id = self.pinyin(item_name)
                 col_num = self.head_col_from + 1
                 for val in row_values[col_num :]:
                     month = self.attr_key_by_col(col_num)
-                    if not isinstance(col_num, int) :
+                    if not isinstance(month, int) :
                         col_num += 1
                         continue
                     try :
-                        cost = self.model.objects.get(year = year, month = month, item_id = item_id)
+                        cost = self.model.objects.get(hashid = task.hashid, year = year, month = month, item_id = item_id)
                     except self.model.DoesNotExist :
                         cost = self.model()
                         cost.line = row_num
@@ -69,6 +69,9 @@ class CostSheet(BaseSheet) :
                     cost_list = []
                 if len(cost_list) == 0 :
                     if u'可控费用小计' == cost.item_name or u'不可控费用小计' == cost.item_name :
+                        cost_list.append(u'<tr class="alert-info"><td>' + cost.item_name + u'</td>')
+                    elif u'累计' == cost.item_name \
+                        or u'合计' == cost.item_name :
                         cost_list.append(u'<tr class="alert-success"><td>' + cost.item_name + u'</td>')
                     else :
                         cost_list.append(u'<tr><td>'+cost.item_name+u'</td>')
