@@ -116,6 +116,7 @@ Session.vim
 tags
 
 *.xls*
+static/admin
 
 uploads/leenjewel
 
