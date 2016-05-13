@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^register/$', views.register, name = 'register'),
     url(r'^logout/$', views.logout, name = 'logout'),
     url(r'^workbook/$', views.workbook, name = 'workbook'),
+    url(r'^workbook/upload/$', views.workbook_upload, name = 'workbook_upload'),
     url(r'^sheet/([^\/]*)/$', views.sheet, name = 'sheet'),
     url(r'^table/([^\/]*)/([^\/]*)/$', views.table, name = 'table'),
 ]

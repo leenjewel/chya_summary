@@ -1,6 +1,34 @@
 {% extends 'summary/logined.html' %}
 
 {% block content %}
+<div class="jumbotron">
+    <h2>报表管理的使用说明:</h2>
+    <p>提交报表文件，指定所提交报表的名称，所属年份，并确保报表名称以及所属年份准确无误。</p>
+    <p>名称相同的报表文件多次提交将覆盖原先提交的同名报表数据，不同名称的报表数据则不会相互覆盖。</p>
+    <p>所以提交报表时请谨慎填写报表名称，言简意赅，能够准确描述所提交的报表即可。</p>
+</div>
+<form class="form" action="{% url 'summary:workbook_upload' %}" method="post"  enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="workbook-year">报表年份:</label>
+        <select id="workbook-year" name="workbook_year">
+            {% for year in years %}
+            <option value="{{ year }}">{{ year }}年</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="workbook-name">报表名称:</label>
+        <input id="workbook-name" name="workbook_name" type="text" placeholder="报表名称" />
+    </div>
+    <div class="form-group">
+        <label for="workbook-file">报表文件:</label>
+        <input id="workbook-file" name="workbook_file" type="file" />
+    </div>
+    <div class="form-group">
+        <input class="btn btn-primary" type="submit" value="提交报表" />
+    </div>
+</form>
 <table class="table table-striped">
     <thead>
         <tr><td>报表名称</td><td>状态</td><td></td></tr>

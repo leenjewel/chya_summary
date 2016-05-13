@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 
+import datetime
+import os
+import md5
+from django.conf import settings
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -92,8 +96,44 @@ def index(request) :
 def workbook(request) :
     context = RequestContext(request)
     context['parsetasks'] = models.ParseTask.objects.all()
+    thisyear = datetime.date.today().year
+    context['years'] = range(thisyear, thisyear-5, -1)
     return render(request, 'summary/workbook.html', context)
 
+
+@login_required(login_url = '/summary/login/')
+def workbook_upload(request) :
+    if request.method == 'POST' :
+        workbook_year = request.POST['workbook_year']
+        workbook_name = request.POST['workbook_name']
+        hashobj = md5.new()
+        hashobj.update(workbook_name.encode('utf-8'))
+        hashid = hashobj.hexdigest()
+        workbook_file = request.FILES['workbook_file']
+        today = datetime.date.today()
+        workbook_dir = os.path.join(settings.MEDIA_ROOT,\
+                request.user.username,\
+                str(today.year),\
+                str(today.month),\
+                str(today.day))
+        os.makedirs(workbook_dir)
+        workbook_path = os.path.join(workbook_dir, hashid)
+        if os.path.isfile(workbook_path) :
+            os.remove(workbook_path)
+        with open(workbook_path, 'wb+') as workbook_fp :
+            for chunk in workbook_file :
+                workbook_fp.write(chunk)
+            workbook_fp.close()
+        try :
+            models.ParseTask.objects.get(hashid = hashid)
+        except models.ParseTask.DoesNotExist :
+            task = models.ParseTask()
+            task.hashid = hashid
+            task.year = workbook_year
+            task.filename = workbook_name
+            task.parsefile = workbook_path
+            task.save()
+    return redirect(reverse('summary:workbook'))
 
 @login_required(login_url = '/summary/login/')
 def sheet(request, hashid) :
