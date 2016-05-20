@@ -186,6 +186,7 @@ class Depreciation(models.Model) :
 class ParseTask(models.Model) :
 
     hashid = models.CharField(max_length = 32, primary_key = True)
+    author = models.CharField(max_length = 32, db_index = True, default = '__nobody__')
     year = models.IntegerField()
     hasparsed = models.BooleanField(default = False)
     isparseing = models.BooleanField(default = False)

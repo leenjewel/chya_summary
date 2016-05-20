@@ -26,32 +26,53 @@ class Command(BaseCommand) :
 
     def add_arguments(self, parser) :
         parser.add_argument('--year', default = datetime.date.today().year)
+        parser.add_argument('--hashid', default = None)
+        parser.add_argument('--excel', default = None)
+        parser.add_argument('--author', default = '__nobody__')
+        parser.add_argument('--name', default = None)
 
     def handle(self, *args, **kwargs) :
-        workbook_path = os.path.join(settings.MEDIA_ROOT, 'workbook')
-        if os.path.exists(workbook_path) :
-            for root, dirs, files in os.walk(workbook_path) :
-                for workbook_file in files :
-                    if not workbook_file[workbook_file.rindex('.')+1:].startswith('xls') :
-                        continue
-                    workbook_path = os.path.join(root, workbook_file)
-                    with open(workbook_path) as workbook_fp :
-                        hashobj = md5.new()
-                        hashobj.update(workbook_fp.read())
-                        hashid = hashobj.hexdigest()
-                        task = None
-                        try :
-                            task = ParseTask.objects.get(hashid = hashid)
-                        except ParseTask.DoesNotExist, e :
-                            task = ParseTask()
-                            task.year = kwargs['year']
-                            task.hashid = hashid
-                            task.hasparsed = False
-                            task.isparseing = False
-                            task.filename = workbook_file
-                            task.save()
-                        workbook_fp.close()
-                        self.doTask(task, workbook_path)
+        excel_files = []
+        if kwargs.get('excel') is None :
+            workbook_path = os.path.join(settings.MEDIA_ROOT, 'workbook')
+            if os.path.exists(workbook_path) :
+                for root, dirs, files in os.walk(workbook_path) :
+                    for workbook_file in files :
+                        if not workbook_file[workbook_file.rindex('.')+1:].startswith('xls') :
+                            continue
+                        excel_files.append(os.path.join(root, workbook_file))
+        else :
+            workbook_file = kwargs['excel']
+            if os.path.isfile(workbook_file):
+                excel_file.append(workbook_file)
+        self.parse(excel_files, *args, **kwargs)
+
+
+    def parse(self, excel_files, *args, **kwargs) :
+        excel_files_count = len(exce_files)
+        for workbook_path in excel_files :
+            hashid = None
+            if 1 == excel_files_count :
+                hashid = kwargs.get('hashid')
+            if hashid is None :
+                with open(workbook_path) as workbook_fp :
+                    hashobj = md5.new()
+                    hashobj.update(workbook_fp.read())
+                    hashid = hashobj.hexdigest()
+                workbook_fp.close()
+            task = None
+            try :
+                task = ParseTask.objects.get(hashid = hashid)
+            except ParseTask.DoesNotExist, e :
+                task = ParseTask()
+                task.year = kwargs['year']
+                task.hashid = hashid
+                task.hasparsed = False
+                task.isparseing = False
+                task.filename = kwargs.get('name', os.path.basename(workbook_path))
+                task.author = kwargs['author']
+                task.save()
+            self.doTask(task, workbook_path)
 
 
     def doTask(self, task, workbook_path) :
